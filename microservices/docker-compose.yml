@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  # === BACKEND MICROSERVICES ===
+  catalogue-service:
+    build: ./microservices/Backend/catalogue
+    ports:
+      - "5002:5002"
+    networks:
+      - backend-net
+
+  commandes-service:
+    build: ./microservices/Backend/commandes
+    ports:
+      - "5003:5003"
+    networks:
+      - backend-net
+
+  authentification-service:
+    build: ./microservices/Backend/utilisateurs
+    ports:
+      - "5000:5000"
+    networks:
+      - backend-net
+
+  # === FRONTEND MICROSERVICES ===
+  admin-ui:
+    build: ./microservices/Frontend/Dashboard_Admin
+    ports:
+      - "4200:80"  # Angular avec Nginx ou http-server
+    networks:
+      - frontend-net
+
+  client-ui:
+    build: ./microservices/Frontend/myapp
+    ports:
+      - "3000:3000"  # Next.js ou autre
+    networks:
+      - frontend-net
+
+networks:
+  backend-net:
+  frontend-net:

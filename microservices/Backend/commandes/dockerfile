@@ -1,0 +1,26 @@
+# Étape 1 : Construction de l'image avec les dépendances
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+
+COPY . .
+
+# Étape 2 : Exécution en production
+FROM node:20
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+ENV NODE_ENV=production
+
+EXPOSE 5001
+
+
+# Commande pour lancer l'application
+CMD ["node", "index.js"]

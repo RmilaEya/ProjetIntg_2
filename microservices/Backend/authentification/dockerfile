@@ -1,0 +1,31 @@
+# Étape 1 : Construction de l'image avec les dépendances
+FROM node:20 AS build
+
+WORKDIR /app
+
+# Copier uniquement package.json et package-lock.json pour optimiser le cache
+COPY package*.json ./
+
+RUN npm install --only=production
+
+# Copier le code source
+COPY . .
+
+# Étape 2 : Exécution en production
+FROM node:20
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+# Définir la variable d'environnement pour la production
+ENV NODE_ENV=production
+
+# Exposer le port 5000
+EXPOSE 5000
+
+ENV MONGO_URI=mongodb+srv://tasksproject:RYsYgucV1gzE7sZY@cluster0.fw30kt5.mongodb.net/projet?retryWrites=true&w=majority&appName=Cluster0
+
+
+# Commande pour lancer l'application
+CMD ["node", "index.js"]
