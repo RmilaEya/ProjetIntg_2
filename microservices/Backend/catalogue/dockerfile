@@ -1,36 +1,20 @@
-# Étape 1 : Utiliser l'image officielle Go pour la construction
+# Étape 1 : Utiliser une image de base avec la version correcte de Go
+FROM golang:1.22
 
-FROM golang:1.22-alpine AS build
-
-# Définir le répertoire de travail
+# Étape 2 : Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copier les fichiers go.mod et go.sum
+# Étape 3 : Copier les fichiers go.mod et go.sum
 COPY go.mod go.sum ./
 
-# Télécharger les dépendances
-RUN go mod tidy
+# Étape 4 : Télécharger les dépendances Go
+# RUN go mod download
 
-# Copier le reste du code source
+# Étape 5 : Copier tout le code source du microservice
 COPY . .
 
-# Compiler l'application Go
-RUN go build -o main .
-
-# Étape 2 : Créer l'image finale
-FROM alpine:3.18
-
-# Installer les dépendances nécessaires (par exemple, le client PostgreSQL)
-RUN apk add --no-cache postgresql-client
-
-# Créer un répertoire pour l'application
-WORKDIR /app
-
-# Copier le binaire de l'étape de build
-COPY --from=build /app/main /app/
-
-# Exposer le port sur lequel l'application va écouter
+# Étape 6 : Exposer le port
 EXPOSE 5002
 
-# Commande pour exécuter l'application Go
-CMD ["./main"]
+# Étape 7 : Lancer l'application
+CMD ["go", "run", "main.go"]

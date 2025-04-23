@@ -10,9 +10,8 @@ const logger = require("./logger");
 
 require('dotenv').config(); 
 
-// const mongoURI = 'mongodb+srv://tasksproject:RYsYgucV1gzE7sZY@cluster0.fw30kt5.mongodb.net/projet?retryWrites=true&w=majority&appName=Cluster0';
+const mongoURI = 'mongodb+srv://tasksproject:nKvR6JejpYd3QDqN@cluster0.fw30kt5.mongodb.net/projet?retryWrites=true&w=majority&appName=Cluster0';
 
-const mongoURI = process.env.MONGO_URI;
 
 
 app.use(express.json());

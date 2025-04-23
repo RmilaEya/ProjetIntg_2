@@ -1,43 +1,45 @@
 version: '3.9'
 
 services:
-  # === BACKEND MICROSERVICES ===
-  catalogue-service:
-    build: ./microservices/Backend/catalogue
-    ports:
-      - "5002:5002"
-    networks:
-      - backend-net
 
-  commandes-service:
-    build: ./microservices/Backend/commandes
-    ports:
-      - "5003:5003"
-    networks:
-      - backend-net
-
-  authentification-service:
-    build: ./microservices/Backend/utilisateurs
+  authentification:
+    build:
+      context: ./Backend/authentification
     ports:
       - "5000:5000"
-    networks:
-      - backend-net
+    environment:
+      - NODE_ENV=production
 
-  # === FRONTEND MICROSERVICES ===
-  admin-ui:
-    build: ./microservices/Frontend/Dashboard_Admin
+  commandes:
+    build:
+      context: ./Backend/commandes
+    volumes:
+      - ./Backend/authentification/src/Middleware:/app/src/Middleware
     ports:
-      - "4200:80"  # Angular avec Nginx ou http-server
-    networks:
-      - frontend-net
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - authentification
 
-  client-ui:
-    build: ./microservices/Frontend/myapp
+  client:
+    build:
+      context: ./Frontend/myapp
     ports:
-      - "3000:3000"  # Next.js ou autre
-    networks:
-      - frontend-net
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - authentification
+      - commandes
 
-networks:
-  backend-net:
-  frontend-net:
+
+  Admin:
+    build:
+      context: ./Frontend/mon-app-angular
+    ports:
+      - "4200:4200"
+    command: ["ng", "serve"]
+    depends_on:
+      - authentification
+      - commandes

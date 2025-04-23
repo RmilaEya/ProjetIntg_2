@@ -1,31 +1,20 @@
-# Étape 1 : Construction de l'image avec les dépendances
-FROM node:20 AS build
 
-WORKDIR /app
-
-# Copier uniquement package.json et package-lock.json pour optimiser le cache
-COPY package*.json ./
-
-RUN npm install --only=production
-
-# Copier le code source
-COPY . .
-
-# Étape 2 : Exécution en production
 FROM node:20
 
+# Étape 2 : Définir le dossier de travail dans le conteneur
 WORKDIR /app
 
-COPY --from=build /app /app
+# Étape 3 : Copier les fichiers de configuration
+COPY package*.json ./
 
-# Définir la variable d'environnement pour la production
-ENV NODE_ENV=production
+# Étape 4 : Installer les dépendances
+RUN npm install
 
-# Exposer le port 5000
+# Étape 5 : Copier le reste de l’application
+COPY . .
+
+# Étape 6 : Exposer le port sur lequel ton microservice tourne
 EXPOSE 5000
 
-ENV MONGO_URI=mongodb+srv://tasksproject:RYsYgucV1gzE7sZY@cluster0.fw30kt5.mongodb.net/projet?retryWrites=true&w=majority&appName=Cluster0
-
-
-# Commande pour lancer l'application
+# Étape 7 : Démarrer l'application
 CMD ["node", "index.js"]

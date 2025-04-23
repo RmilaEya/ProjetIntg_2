@@ -14,8 +14,7 @@ app.use(cors());
 
 require('dotenv').config(); 
 // MongoDB connection string
-// const mongoURI = 'mongodb+srv://tasksproject:RYsYgucV1gzE7sZY@cluster0.fw30kt5.mongodb.net/projet?retryWrites=true&w=majority&appName=Cluster0';
-const mongoURI = process.env.MONGO_URI_commandes;
+const mongoURI = 'mongodb+srv://tasksproject:nKvR6JejpYd3QDqN@cluster0.fw30kt5.mongodb.net/projet?retryWrites=true&w=majority&appName=Cluster0';
 
 app.use((req, res, next) => {
   logger.info(`Requête reçue: ${req.method} ${req.url}`);
